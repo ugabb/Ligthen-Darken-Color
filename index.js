@@ -2,7 +2,25 @@ const hexInput = document.getElementById("hex-input");
 const inputColor = document.getElementById("input-color");
 const alteredColorBox = document.getElementById("altered-color");
 const sliderText = document.getElementById('slider-text');
+const alteredColorText = document.getElementById('alteredColorText');
 const slider = document.getElementById('slider');
+
+const lightenText = document.getElementById('lightenText');
+const darkenText = document.getElementById('darkenText');
+const toggleBtn = document.getElementById('toggleBtn');
+
+toggleBtn.addEventListener('click', () => {
+  if(toggleBtn.classList.contains('toggled')){
+    toggleBtn.classList.remove('toggled');
+    lightenText.classList.remove('unselected');
+    darkenText.classList.add('unselected');
+  } else {
+    toggleBtn.classList.add('toggled');
+    lightenText.classList.add('unselected');
+    darkenText.classList.remove('unselected');
+  } 
+  reset(); 
+})
 
 
 hexInput.addEventListener('keyup', () =>{
@@ -12,6 +30,8 @@ hexInput.addEventListener('keyup', () =>{
     const strippedHex = hex.replace('#','');
 
     inputColor.style.backgroundColor = "#" + strippedHex;
+
+    reset(); 
 })
 
 
@@ -67,11 +87,22 @@ const increaseWithin0To255 = (hex, amount) => {
 
 
 slider.addEventListener('input',() => {
+
   if(!validHex(hexInput.value)) return;
-  
   sliderText.textContent = `${slider.value}%`;
 
-  const alteredHex = alteredColor(hexInput.value,slider.value);
+  const valueAddition  = 
+    toggleBtn.classList.contains('toggled') ? -slider.value : slider.value;
+
+  const alteredHex = alteredColor(hexInput.value,valueAddition);
   console.log(alteredHex)
   alteredColorBox.style.backgroundColor = alteredHex;
+  alteredColorText.innerText = `Altered Color ${alteredHex}`; 
 })
+
+const reset = () =>{ 
+  slider.value = 0;
+  sliderText.innerText=`0%`;
+  alteredColorBox.style.backgroundColor = hexInput.value;
+  alteredColorText.innerText = `Altered Color #${hexInput.value}`; 
+}
